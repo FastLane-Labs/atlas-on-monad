@@ -12,8 +12,6 @@ import { Sorter } from "../src/atlas/helpers/Sorter.sol";
 import { ExecutionEnvironment } from "../src/atlas/common/ExecutionEnvironment.sol";
 import { ShMonad } from "fastlane-contracts/shmonad/ShMonad.sol";
 import { JsonHelper } from "./utils/JsonHelper.sol";
-import { AddressHub } from "../src/common/AddressHub.sol";
-import { Directory } from "../src/common/Directory.sol";
 
 contract DeployAtlasScript is Script {
     using JsonHelper for VmSafe;
@@ -40,14 +38,6 @@ contract DeployAtlasScript is Script {
     function run() public {
         uint256 deployerPrivateKey = vm.envUint("GOV_PRIVATE_KEY");
         address deployer = vm.addr(deployerPrivateKey);
-
-        address addressHub = vm.envAddress("ADDRESS_HUB");
-
-        // Get the AddressHub instance
-        AddressHub hub = AddressHub(addressHub);
-
-        // address taskManagerAddress = hub.getAddressFromPointer(Directory._TASK_MANAGER);
-        // require(taskManagerAddress != address(0), "TaskManager not properly set in AddressHub");
 
         console.log("Starting Atlas deployment...");
         console.log("\n");
