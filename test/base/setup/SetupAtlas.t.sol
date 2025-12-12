@@ -21,12 +21,9 @@ import { FactoryLib } from "../../../src/atlas/core/FactoryLib.sol";
 import { ExecutionEnvironment } from "../../../src/atlas/common/ExecutionEnvironment.sol";
 import { UserOperation } from "../../../src/atlas/types/UserOperation.sol";
 import { SolverOperation } from "../../../src/atlas/types/SolverOperation.sol";
-
-// Other local imports
-import { AddressHub } from "../../../src/common/AddressHub.sol";
-import { Directory } from "../../../src/common/Directory.sol";
 import { ShMonad } from "fastlane-contracts/shmonad/ShMonad.sol";
 
+// Other local imports
 contract SetupAtlas is Test {
     uint256 DEFAULT_ATLAS_ESCROW_DURATION = 240;
     uint256 DEFAULT_ATLAS_SURCHARGE_RATE = 2_500; // 25% (out of 10_000)
@@ -71,14 +68,13 @@ contract SetupAtlas is Test {
 
     function __setUpAtlas(
         address deployer,
-        AddressHub addressHub,
         ShMonad shMonad,
         bool isLocal
     ) internal {
         // If setup diverges in the future, branch on isLocal here
         (isLocal); // silence unused for now
         __createAccountsAtlas();
-        __deployContractsAtlas(deployer, addressHub, shMonad);
+        __deployContractsAtlas(deployer, shMonad);
         __initialBalancesAtlas(shMonad);
     }
 
@@ -97,7 +93,7 @@ contract SetupAtlas is Test {
         (solverFiveEOA, solverFivePK) = makeAddrAndKey("solverFiveEOA");
     }
 
-    function __deployContractsAtlas(address deployer, AddressHub addressHub, ShMonad shMonad) internal {
+    function __deployContractsAtlas(address deployer, ShMonad shMonad) internal {
         vm.startPrank(deployer);
         // Deploy TestSimulator for test access to internal functions
         simulator = new TestSimulator();
@@ -132,9 +128,6 @@ contract SetupAtlas is Test {
         simulator.setAtlas(address(atlas));
         sorter = new Sorter(address(atlas));
         govBurner = new GovernanceBurner();
-
-        // Register Atlas' address in the AddressHub
-        addressHub.addPointerAddress(Directory._ATLAS, address(atlas), "atlas");
 
         vm.stopPrank();
 
