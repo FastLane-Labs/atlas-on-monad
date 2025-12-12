@@ -25,7 +25,7 @@ import { SolverOperation } from "../../../src/atlas/types/SolverOperation.sol";
 // Other local imports
 import { AddressHub } from "../../../src/common/AddressHub.sol";
 import { Directory } from "../../../src/common/Directory.sol";
-import { ShMonad } from "../../../src/shmonad/ShMonad.sol";
+import { ShMonad } from "fastlane-contracts/shmonad/ShMonad.sol";
 
 contract SetupAtlas is Test {
     uint256 DEFAULT_ATLAS_ESCROW_DURATION = 240;
@@ -124,7 +124,7 @@ contract SetupAtlas is Test {
             initialSurchargeRecipient: deployer,
             l2GasCalculator: address(0),
             factoryLib: address(factoryLib),
-            shMonad: addressHub.shMonad(),
+            shMonad: address(shMonad),
             shMonadPolicyID: atlasPolicyID
         });
         // Deploy TestAtlasVerification for test access to internal functions
@@ -136,10 +136,12 @@ contract SetupAtlas is Test {
         // Register Atlas' address in the AddressHub
         addressHub.addPointerAddress(Directory._ATLAS, address(atlas), "atlas");
 
-        // Make Atlas a policy agent of its policy in ShMonad
-        shMonad.addPolicyAgent(atlasPolicyID, address(atlas));
-
         vm.stopPrank();
+
+        // Make Atlas a policy agent of its policy in ShMonad
+        address shMonadOwner = shMonad.owner();
+        vm.prank(shMonadOwner);
+        shMonad.addPolicyAgent(atlasPolicyID, address(atlas));
 
         // Give the Simulator 1000 MON to simulate metacalls where userOp.value > 0
         vm.deal(address(simulator), 1000e18);

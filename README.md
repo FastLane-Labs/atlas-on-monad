@@ -1,159 +1,80 @@
-# Fastlane Contracts
+# Atlas on Monad
 
-Smart contracts powering Fastlane-Labs' infrastructure on Monad.
+This repository contains the Atlas V1 smart contracts adapted for the Monad ecosystem. Atlas is FastLane’s execution abstraction / application‑specific sequencing layer that lets each dApp define ordering and MEV rules.
 
-## About FastLane Labs
+- Core protocol contracts live in `src/atlas/**`.
+- Shared common utilities live in `src/common/**`.
+- Atlas integrates with ShMonad, which is pulled in from the `FastLane-Labs/fastlane-contracts` repo as a Foundry dependency.
 
-Fastlane-Labs is building critical infrastructure for the Monad ecosystem, focusing on improving the developer and user experience through optimized smart contracts and services.
+## Documentation
 
-## Projects
-
-### Atlas
-
-Atlas is FastLane's application-specific sequencing layer, letting each dApp set its own rules for transaction ordering and MEV handling. It captures the surrounding MEV and leaves distribution up to the application—whether that means rebating users, rewarding LPs, or powering protocol revenue.
-
-[Source Code](./src/atlas) | [Documentation](https://docs.shmonad.xyz/products/monad-atlas/overview/)
-
-### Shmonad
-
-Stake MON, get shMON—the liquid staking token that keeps earning + MEV rewards while you commit it into policy "vaults." One token secures the network and backs your favourite dApps, all without sacrificing liquidity.
-
-[Source Code](./src/shmonad) | [Documentation](https://docs.shmonad.xyz/products/shmonad/overview/)
-
-### Task Manager
-
-An on-chain "cron" that lets anyone schedule a transaction for a future block and guarantees it executes, paid for with bonded shMON or MON. No off-chain bots, no forgotten claims—just a single call to set it and forget it.
-
-[Source Code](./src/task-manager) | [Documentation](https://docs.shmonad.xyz/products/task-manager/overview/)
-
-### Paymaster
-
-A ready-made ERC-4337 bundler that batches UserOps and fronts gas via a shMON-funded Paymaster. The bundler handles Monad's async quirks and gets your transactions on-chain.
-
-[Source Code](./src/paymaster) | [Documentation](https://docs.shmonad.xyz/products/shbundler-4337/paymaster/)
-
-### Gas Relay
-
-A module that enables seamless gas-less UX for dApps, powered by ShMonad and the Atlas Task Manager. Users sign with their regular wallet once, then interact through an expendable session key while the dApp silently handles gas payments.
-
-Key features:
-- No user gas pop-ups - improves onboarding and reduces drop-off
-- Policy-driven security with ShMonad commitment policies
-- Composable with Atlas MEV framework and EVM-compatible contracts
-
-[Source Code](./src/common/relay) | [Module Documentation](./src/common/relay/README.md)
+- Source code: `src/atlas`
+- Atlas docs: https://docs.shmonad.xyz/products/monad-atlas/overview/
 
 ## Development
 
 ### Prerequisites
 
-- [Foundry](https://book.getfoundry.sh/getting-started/installation)
-- Make
+- Foundry (forge/anvil)
+- git with submodules enabled
 
-### Quick Start
+### Setup
 
-```shell
-# Install dependencies
-$ make install
-
-# Build the project
-$ make build
-
-# Run tests
-$ make test
-```
-
-### Available Commands
+Fetch dependencies (including `lib/fastlane-contracts`):
 
 ```shell
-# Clean, install dependencies, build and test
-$ make all
-
-# Run tests with gas reporting
-$ make test-gas
-
-# Format code
-$ make format
-
-# Generate gas snapshots
-$ make snapshot
-
-# Run ShMonad scenario suite (set SIM_VALIDATOR_ASSERTS=false to bypass validator-only checks)
-$ make simulation-local
-
-# Start local node
-$ make anvil
-
-# Fork a specific network for testing
-$ make fork-anvil NETWORK=monad-testnet
-
-# Check contract sizes
-$ make size
+git submodule update --init --recursive
 ```
 
-### ShMonad scenario suite
-
-- Complex scenario tests in `test/shmonad/scenarios/ComplexScenarios.t.sol` now snapshot global accounting state via `TestShMonad` before and after each action (deposits, boosts, withdraws) to keep coverage focused on ledger consistency rather than per-validator splits.
-- Validator-specific assertions remain available for regression coverage but can be disabled by setting `SIMULATION_VALIDATOR_ASSERTS=false` (for example: `make simulation-local SIM_VALIDATOR_ASSERTS=false`).
-
-### Deployment
-
-To deploy contracts:
-
-1. Set environment variables:
-```shell
-NETWORK=<your_rpc_url>
-GOV_PRIVATE_KEY=<your_private_key>
-ADDRESS_HUB=<address_hub_address> # for subsequent deployments
-```
-
-2. Run specific deployment targets:
-```shell
-# Deploy individual components
-$ make deploy-address-hub
-$ make deploy-atlas
-$ make deploy-shmonad
-$ make deploy-taskmanager
-$ make deploy-paymaster
-```
-
-### Contract Verification
-
-Generate verification JSON files for contract verification on block explorers:
+### Build
 
 ```shell
-# Generate verification JSON for a contract
-$ make generate-verification-json \
-    CONTRACT_ADDRESS=0x123... \
-    CONTRACT_PATH=src/MyContract.sol:MyContract
-
-# With constructor arguments
-$ make generate-verification-json \
-    CONTRACT_ADDRESS=0x123... \
-    CONTRACT_PATH=src/MyContract.sol:MyContract \
-    CONSTRUCTOR_ARGS=0x456...
+forge build
 ```
 
-**Examples:**
+### Tests (Monad mainnet fork)
+
+Atlas tests fork Monad mainnet so they can talk to the live ShMonad proxy. The base test etches the mock Monad staking precompile from the dependency onto:
+
+`0x0000000000000000000000000000000000001000`
+
+1. Export a mainnet RPC URL:
+
 ```shell
-# Atlas contract
-$ make generate-verification-json \
-    CONTRACT_ADDRESS=0x4a730A56344873FB28f7C3d65A67Fea56f5e0F46 \
-    CONTRACT_PATH=src/atlas/core/Atlas.sol:Atlas \
-    CONSTRUCTOR_ARGS=0x00000000000000000000000000000000000000000000000000000000000009c4...
-
-# AtlasVerification contract  
-$ make generate-verification-json \
-    CONTRACT_ADDRESS=0x834B181d1F4Cd9Ec61E02D0DF0E5e4F944eFA508 \
-    CONTRACT_PATH=src/atlas/core/AtlasVerification.sol:AtlasVerification \
-    CONSTRUCTOR_ARGS=0x0000000000000000000000004a730a56344873fb28f7c3d65a67fea56f5e0f46...
+export MONAD_MAINNET_RPC_URL=<your_rpc_url>
 ```
 
-Generated JSON files are saved to `cache/etherscan_ContractName_timestamp.json` and can be:
-- Uploaded manually to block explorer verification pages
-- Used for API-based verification when available
-- Referenced for compilation settings and source code
+2. Run tests:
 
-## Documentation
+```shell
+forge test -vvv
 
-For full documentation, visit [docs.shmonad.xyz](https://docs.shmonad.xyz/).
+# Targeted example:
+forge test \
+  --match-path test/atlas/Sorter.t.sol \
+  --match-test test_Sorter_sortBids_SingleValidSolver \
+  -vvv
+```
+
+### Local node
+
+```shell
+anvil
+
+# Or fork mainnet locally:
+anvil --fork-url $MONAD_MAINNET_RPC_URL
+```
+
+## Deployment (Atlas)
+
+An Atlas deployment script is available at `script/deploy-atlas.s.sol`. It is currently configured for Monad testnet addresses; update the ShMonad proxy address and policy ID when deploying to other networks.
+
+```shell
+forge script script/deploy-atlas.s.sol:DeployAtlasScript \
+  --rpc-url <network_rpc_url> \
+  --broadcast -vvv
+```
+
+## License
+
+BUSL-1.1

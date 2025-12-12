@@ -5,7 +5,6 @@ import "forge-std/Test.sol";
 import { VmSafe } from "forge-std/Vm.sol";
 
 // Lib imports
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {
     TransparentUpgradeableProxy
 } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
@@ -14,12 +13,12 @@ import { OwnableUpgradeable } from "@openzeppelin-upgradeable/contracts/access/O
 
 // Protocol Setup imports (for fork mode)
 import { SetupAtlas } from "./setup/SetupAtlas.t.sol";
-import { SetupShMonad } from "./setup/SetupShMonad.t.sol";
 
 // Protocol imports
 import { AddressHub } from "../../src/common/AddressHub.sol";
 import { Directory } from "../../src/common/Directory.sol";
-import { ShMonad } from "../../src/shmonad/ShMonad.sol";
+import { ShMonad } from "fastlane-contracts/shmonad/ShMonad.sol";
+import { MockMonadStakingPrecompile } from "fastlane-contracts/shmonad/mocks/MockMonadStakingPrecompile.sol";
 
 // Other imports
 import { TestConstants } from "./TestConstants.sol";
@@ -32,7 +31,6 @@ import { JsonHelper } from "../../script/utils/JsonHelper.sol";
  */
 contract BaseTest is
     SetupAtlas,
-    SetupShMonad,
     TestConstants
 {
     using UpgradeUtils for VmSafe;
@@ -40,20 +38,21 @@ contract BaseTest is
 
     // Constants
     uint256 constant SCALE = 1e18;
+    address internal constant STAKING_PRECOMPILE = 0x0000000000000000000000000000000000001000;
 
     // Test accounts
     address internal user = makeAddr("User");
     address internal deployer = TESTNET_FASTLANE_DEPLOYER;
     
-    // Fork mode proxy admin addresses (prefix to avoid conflicts with Setup contracts)
-    address internal forkShMonadProxyAdmin = MAINNET_SHMONAD_PROXY_ADMIN;
-    address internal forkShMonadImplementation = MAINNET_SHMONAD_IMPLEMENTATION;
+    // Mainnet ShMonad proxy
     address internal forkShMonadProxy = MAINNET_SHMONAD_PROXY;
 
     // Core contracts
     AddressHub internal addressHub;
     ProxyAdmin internal addressHubProxyAdmin;
     address internal addressHubImpl;
+    ShMonad public shMonad;
+    MockMonadStakingPrecompile internal staking;
 
     // Network configuration
     string internal rpcUrl;
@@ -90,18 +89,23 @@ contract BaseTest is
         // Set consistent gas price for fork mode too
         vm.fee(1 gwei);
 
+        _etchStakingPrecompile();
+
         // Deploy AddressHub and migrate pointers
         __setUpAddressHub();
 
-        // // Stage 1: Store references to existing proxies (fork mode)
-        // SetupShMonad.__setUpShMonad(deployer, forkShMonadProxyAdmin, addressHub, false);
-        
-        // // Stage 2: Upgrade implementations to the latest version
-        // SetupShMonad.__upgradeShMonad(deployer, forkShMonadProxyAdmin, addressHub, false);
-
+        // Bind to existing mainnet ShMonad proxy
         shMonad = ShMonad(payable(forkShMonadProxy));
+        vm.label(address(shMonad), "ShMonad");
         // Setup other contracts
         SetupAtlas.__setUpAtlas(deployer, addressHub, shMonad, false);
+    }
+
+    function _etchStakingPrecompile() internal {
+        MockMonadStakingPrecompile tempStakingMock = new MockMonadStakingPrecompile();
+        vm.etch(STAKING_PRECOMPILE, address(tempStakingMock).code);
+        staking = MockMonadStakingPrecompile(payable(STAKING_PRECOMPILE));
+        vm.label(STAKING_PRECOMPILE, "MonadStakingPrecompile");
     }
 
 
@@ -132,15 +136,8 @@ contract BaseTest is
     }
 
     function __migratePointers() internal {
-        AddressHub oldAddressHub = AddressHub(address(TESTNET_ADDRESS_HUB));
-
-        // address _taskManager = oldAddressHub.getAddressFromPointer(Directory._TASK_MANAGER);
-        // address _shmonad = oldAddressHub.getAddressFromPointer(Directory._SHMONAD);
-
-        // Migrate pointers to new AddressHub
         vm.startPrank(deployer);
-        // addressHub.addPointerAddress(Directory._SHMONAD, _shmonad, "ShMonad");
-        // addressHub.addPointerAddress(Directory._TASK_MANAGER, _taskManager, "TaskManager");
+        addressHub.addPointerAddress(Directory._SHMONAD, MAINNET_SHMONAD_PROXY, "shMonad");
         vm.stopPrank();
     }
 
