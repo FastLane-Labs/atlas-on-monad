@@ -73,7 +73,6 @@ contract SetupAtlas is Test {
         address deployer,
         AddressHub addressHub,
         ShMonad shMonad,
-        // address taskManager,
         bool isLocal
     ) internal {
         // If setup diverges in the future, branch on isLocal here
@@ -125,7 +124,6 @@ contract SetupAtlas is Test {
             initialSurchargeRecipient: deployer,
             l2GasCalculator: address(0),
             factoryLib: address(factoryLib),
-            // taskManager: address(taskManager),
             shMonad: addressHub.shMonad(),
             shMonadPolicyID: atlasPolicyID
         });
