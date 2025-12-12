@@ -4,3 +4,4 @@
 forge-std/=lib/forge-std/src/
 account-abstraction-v7/=lib/account-abstraction-v7/
 account-abstraction-v8/=lib/account-abstraction-v8/
+fastlane-contracts/=lib/fastlane-contracts/src/

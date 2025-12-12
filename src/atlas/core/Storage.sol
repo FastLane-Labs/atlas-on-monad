@@ -8,7 +8,7 @@ import { AtlasEvents } from "../types/AtlasEvents.sol";
 import { AtlasErrors } from "../types/AtlasErrors.sol";
 import { AtlasConstants } from "../types/AtlasConstants.sol";
 import { IAtlasVerification } from "../interfaces/IAtlasVerification.sol";
-import { IShMonad } from "../../shmonad/interfaces/IShMonad.sol";
+import { IShMonad } from "fastlane-contracts/shmonad/interfaces/IShMonad.sol";
 
 /// @title Storage
 /// @author FastLane Labs

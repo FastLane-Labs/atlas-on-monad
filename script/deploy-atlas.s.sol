@@ -10,7 +10,7 @@ import { AtlasVerification } from "../src/atlas/core/AtlasVerification.sol";
 import { Simulator } from "../src/atlas/helpers/Simulator.sol";
 import { Sorter } from "../src/atlas/helpers/Sorter.sol";
 import { ExecutionEnvironment } from "../src/atlas/common/ExecutionEnvironment.sol";
-import { ShMonad } from "../src/shmonad/ShMonad.sol";
+import { ShMonad } from "fastlane-contracts/shmonad/ShMonad.sol";
 import { JsonHelper } from "./utils/JsonHelper.sol";
 import { AddressHub } from "../src/common/AddressHub.sol";
 import { Directory } from "../src/common/Directory.sol";

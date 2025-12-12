@@ -6,7 +6,7 @@ import { Math } from "@openzeppelin/contracts/utils/math/Math.sol";
 import { IAtlas } from "../interfaces/IAtlas.sol";
 import { IDAppControl } from "../interfaces/IDAppControl.sol";
 import { IAtlasVerification } from "../interfaces/IAtlasVerification.sol";
-import { IShMonad } from "../../shmonad/interfaces/IShMonad.sol";
+import { IShMonad } from "fastlane-contracts/shmonad/interfaces/IShMonad.sol";
 
 import { CallBits } from "../libraries/CallBits.sol";
 import { AccountingMath } from "../libraries/AccountingMath.sol";

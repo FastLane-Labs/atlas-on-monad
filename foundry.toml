@@ -11,12 +11,11 @@
   isolate = false
   fs_permissions = [{ access = "read-write", path = "./"}]
   json = true
-  gas_reports = ["ShMonad"]
   # Monad Configuration for contract verification
   metadata = true
   metadata_hash = "none"  # disable ipfs
   use_literal_content = true # use source code
-  chain_id = 10143
+  chain_id = 143
   # Increase code size limit to handle large contracts (Monad supports 128KB)
   code_size_limit = 131072  # 128KB (Monad's increased limit from standard 24KB)
   # Local testing configuration
@@ -37,18 +36,17 @@
   isolate = false
   fs_permissions = [{ access = "read-write", path = "./"}]
   json = true
-  gas_reports = ["ShMonad"]
   metadata = true
   metadata_hash = "none"
   use_literal_content = true
-  chain_id = 10143
+  chain_id = 143
   # Increase code size limit to handle large contracts (Monad supports 128KB)
   code_size_limit = 131072  # 128KB (Monad's increased limit from standard 24KB)
   # Fork configuration
   fuzz = { runs = 100 }  # Fewer fuzz runs for faster execution with fork
   invariant = { runs = 100 }
   # Fork settings will be provided via environment variables
-  # eth_rpc_url = "${MONAD_TESTNET_RPC_URL}"
+  # eth_rpc_url = "${MONAD_MAINNET_RPC_URL}"
   # fork_block_number = "${FORK_BLOCK:-latest}"
   # no_storage_caching = false
 
@@ -65,11 +63,10 @@
   isolate = false
   fs_permissions = [{ access = "read-write", path = "./"}]
   json = true
-  gas_reports = ["ShMonad"]
   metadata = true
   metadata_hash = "none"
   use_literal_content = true
-  chain_id = 10143
+  chain_id = 143
   # Increase code size limit to handle large contracts (Monad supports 128KB)
   code_size_limit = 131072  # 128KB (Monad's increased limit from standard 24KB)
   # Aggressive fuzzing configuration
@@ -90,11 +87,10 @@
   isolate = false
   fs_permissions = [{ access = "read-write", path = "./"}]
   json = true
-  gas_reports = ["ShMonad", "TaskManagerEntrypoint", "Paymaster"]
   metadata = true
   metadata_hash = "none"
   use_literal_content = true
-  chain_id = 10143
+  chain_id = 143
   # Increase code size limit to handle large contracts (Monad supports 128KB)
   code_size_limit = 131072  # 128KB (Monad's increased limit from standard 24KB)
   # CI-optimized settings
