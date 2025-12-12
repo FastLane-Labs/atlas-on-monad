@@ -1,0 +1,134 @@
+# Default profile - Local unit tests (fast, no forking)
+[profile.default]
+  optimizer_runs = 50
+  timeout = 30000
+  block_gas_limit = 300000000
+  gas_limit = 3000000000
+  gas_price = 2000000000
+  solc_version = "0.8.30"
+  evm_version = "cancun"
+  via_ir = true
+  isolate = false
+  fs_permissions = [{ access = "read-write", path = "./"}]
+  json = true
+  gas_reports = ["ShMonad"]
+  # Monad Configuration for contract verification
+  metadata = true
+  metadata_hash = "none"  # disable ipfs
+  use_literal_content = true # use source code
+  chain_id = 10143
+  # Increase code size limit to handle large contracts (Monad supports 128KB)
+  code_size_limit = 131072  # 128KB (Monad's increased limit from standard 24KB)
+  # Local testing configuration
+  fuzz = { runs = 256 }
+  invariant = { runs = 256 }
+  # No fork configuration - pure local testing
+
+# Fork profile - Integration tests against testnet
+[profile.fork]
+  optimizer_runs = 50
+  timeout = 60000  # Longer timeout for network operations
+  block_gas_limit = 300000000
+  gas_limit = 3000000000
+  gas_price = 2000000000
+  solc_version = "0.8.30"
+  evm_version = "cancun"
+  via_ir = true
+  isolate = false
+  fs_permissions = [{ access = "read-write", path = "./"}]
+  json = true
+  gas_reports = ["ShMonad"]
+  metadata = true
+  metadata_hash = "none"
+  use_literal_content = true
+  chain_id = 10143
+  # Increase code size limit to handle large contracts (Monad supports 128KB)
+  code_size_limit = 131072  # 128KB (Monad's increased limit from standard 24KB)
+  # Fork configuration
+  fuzz = { runs = 100 }  # Fewer fuzz runs for faster execution with fork
+  invariant = { runs = 100 }
+  # Fork settings will be provided via environment variables
+  # eth_rpc_url = "${MONAD_TESTNET_RPC_URL}"
+  # fork_block_number = "${FORK_BLOCK:-latest}"
+  # no_storage_caching = false
+
+# Aggressive fuzzing profile for edge case discovery
+[profile.fuzz]
+  optimizer_runs = 50
+  timeout = 120000  # Extended timeout for intensive fuzzing
+  block_gas_limit = 300000000
+  gas_limit = 3000000000
+  gas_price = 2000000000
+  solc_version = "0.8.30"
+  evm_version = "cancun"
+  via_ir = true
+  isolate = false
+  fs_permissions = [{ access = "read-write", path = "./"}]
+  json = true
+  gas_reports = ["ShMonad"]
+  metadata = true
+  metadata_hash = "none"
+  use_literal_content = true
+  chain_id = 10143
+  # Increase code size limit to handle large contracts (Monad supports 128KB)
+  code_size_limit = 131072  # 128KB (Monad's increased limit from standard 24KB)
+  # Aggressive fuzzing configuration
+  fuzz = { runs = 10000, seed = "0x1" }
+  invariant = { runs = 5000, depth = 50, fail_on_revert = true }
+  # No fork for maximum speed during fuzzing
+
+# CI profile - Balanced for continuous integration
+[profile.ci]
+  optimizer_runs = 50  # More optimization for deployment simulation
+  timeout = 45000
+  block_gas_limit = 300000000
+  gas_limit = 3000000000
+  gas_price = 2000000000
+  solc_version = "0.8.30"
+  evm_version = "cancun"
+  via_ir = true
+  isolate = false
+  fs_permissions = [{ access = "read-write", path = "./"}]
+  json = true
+  gas_reports = ["ShMonad", "TaskManagerEntrypoint", "Paymaster"]
+  metadata = true
+  metadata_hash = "none"
+  use_literal_content = true
+  chain_id = 10143
+  # Increase code size limit to handle large contracts (Monad supports 128KB)
+  code_size_limit = 131072  # 128KB (Monad's increased limit from standard 24KB)
+  # CI-optimized settings
+  fuzz = { runs = 1000 }
+  invariant = { runs = 500 }
+  verbosity = 3
+
+[profile.coverage]
+  optimizer_runs = 50
+  via_ir = false
+  code_size_limit = 131072
+  fs_permissions = [{ access = "read-write", path = "./"}]
+  json = true
+  additional_compiler_profiles = [
+    { name = "via-ir", via_ir = true }
+  ]
+  compilation_restrictions = [
+    { paths = "src/atlas/**", via_ir = true },
+    { paths = "src/task-manager/**", via_ir = true },
+    { paths = "test/shmonad/FeeLib.t.sol", via_ir = true }
+  ]
+
+[fmt]
+  bracket_spacing = true
+  int_types = "long"
+  line_length = 120
+  multiline_func_header = "all"
+  number_underscore = "thousands"
+  quote_style = "double"
+  tab_width = 4
+  wrap_comments = true
+  ignore = ["./**/*.t.sol"]
+
+[lint]
+exclude_lints = ["mixed-case-variable"]
+
+# See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

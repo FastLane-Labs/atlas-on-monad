@@ -1,0 +1,8 @@
+{
+    "name": "fastlane-contracts",
+    "version": "1.0.0",
+    "repository": "https://github.com/FastLane-Labs/fastlane-contracts",
+    "author": "FastLane Labs",
+    "license": "BUSL-1.1"
+  }
+  

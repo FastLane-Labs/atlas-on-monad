@@ -1,0 +1,32 @@
+{
+  "lib/account-abstraction-v7": {
+    "branch": {
+      "name": "releases/v0.7",
+      "rev": "7af70c8993a6f42973f520ae0752386a5032abe7"
+    }
+  },
+  "lib/account-abstraction-v8": {
+    "branch": {
+      "name": "releases/v0.8",
+      "rev": "4cbc06072cdc19fd60f285c5997f4f7f57a588de"
+    }
+  },
+  "lib/fastlane-contracts": {
+    "branch": {
+      "name": "main",
+      "rev": "485e9305b251089b94f62ef22b7ab9a74e0d32c3"
+    }
+  },
+  "lib/forge-std": {
+    "rev": "f46d8301cf732f4f83846565aa475628265e51e0"
+  },
+  "lib/openzeppelin-contracts": {
+    "rev": "48bd2864c6c696bf424ee0e2195f2d72ddd1a86c"
+  },
+  "lib/openzeppelin-contracts-upgradeable": {
+    "rev": "6b9adf75b0048bfd320d9ad102240514e0f12735"
+  },
+  "lib/solady": {
+    "rev": "acd959aa4bd04720d640bf4e6a5c71037510cc4b"
+  }
+}

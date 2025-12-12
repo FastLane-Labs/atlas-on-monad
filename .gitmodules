@@ -1,0 +1,4 @@
+[submodule "lib/fastlane-contracts"]
+	path = lib/fastlane-contracts
+	url = https://github.com/FastLane-Labs/fastlane-contracts
+	branch = main

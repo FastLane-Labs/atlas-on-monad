@@ -1,0 +1,46 @@
+# Foundry
+cache/
+out/
+broadcast/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE/Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Coverage
+lcov.info
+coverage/
+
+# Gas snapshots
+.gas-snapshot
+
+# Typechain
+typechain/
+typechain-types/
+
+# Build artifacts
+artifacts/
+build/
+
+# Local deployment data
+deployments/localhost/
+
+# Secrets
+*.pem
+*.key
+
