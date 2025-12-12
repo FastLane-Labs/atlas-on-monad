@@ -11,7 +11,7 @@ contract TestConstants {
 
     // SHMONAD
     address internal constant TESTNET_SHMONAD_PROXY_ADMIN = 0x0f8361B0C2F9C23e6e9BBA54FF01084596b38AcA;
-    address internal constant TESTNET_FASTLANE_DEPLOYER = 0x006DD7813C90CaB67c1Dc185c21Abb2C7414b061; // fastlane
+    address internal constant TESTNET_FASTLANE_DEPLOYER = 0x48a3267BCc4Cf230e9Bc4cae0c11EEbDb9a6A687; // fastlane
 
     address internal constant MAINNET_SHMONAD_IMPLEMENTATION = 0x5B6af4c2584952d45153e3B78638764DDb7b5941;
     address internal constant MAINNET_SHMONAD_PROXY = 0x1B68626dCa36c7fE922fD2d55E4f631d962dE19c;
